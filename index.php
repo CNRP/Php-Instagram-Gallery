@@ -12,10 +12,15 @@
 <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
 
 <style>
+    html{
+        background-color: #020512;
+    }
     .gallery{
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
     }
     .column{
         display: flex;
@@ -75,6 +80,7 @@ while($file = readdir($handle)){
 }
 
 $length = sizeof($array)/4;
+print(sizeof($array));
 print($length);
 $count = 0;
 
@@ -88,11 +94,6 @@ foreach($array as $x => $val) {
     $count++;
     $strip = str_replace("_", "", $x);
     $strip = str_replace("-", "", $strip);
-
-    if($count == $length){
-        $count = 0;
-        echo '</div><div class="column">';
-    }
 
     if($val == 0){
         echo '<img src="'.$account_name.'/'.$x.'_UTC.jpg" class="gallery-item"/>';
@@ -115,6 +116,10 @@ foreach($array as $x => $val) {
             <script> new Splide( ".splide-'.$strip.'" ).mount(); </script>';
     }
     
+    if($count >= $length){
+        $count = 0;
+        echo '</div><div class="column">';
+    }
 }
 
 echo '</div>';
