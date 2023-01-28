@@ -21,8 +21,8 @@
 # # Get instance
 # L = instaloader.Instaloader()
 
-# USER = "connorpefc";
-# PASSWORD = "!123Acer123";
+# USER = "";
+# PASSWORD = "!";
 
 # # Optionally, login or load session
 # # L.login(USER, PASSWORD)        # (login)
