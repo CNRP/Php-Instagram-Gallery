@@ -1,6 +1,6 @@
 # Php-Instagram-Gallery
 
-Using Instaloader to scrape new instagram posts
+Using Instaloader python library to scrape new instagram posts
 
 
 - Displays instagram posts from a selected user
