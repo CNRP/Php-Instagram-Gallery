@@ -36,15 +36,15 @@
     .group{
         background-color: red;
     }
-
 </style>
 
 <?php
 
 $array = []; 
 $account_name = "everton";
+$directory = "images/instagram";
 
-$handle = opendir(dirname(realpath(__FILE__)).'/'.$account_name.'/');
+$handle = opendir(dirname(realpath(__FILE__)).'/'.$directory.'/');
 while($file = readdir($handle)){
     $supported_image = array(
         'gif',
@@ -96,7 +96,7 @@ foreach($array as $x => $val) {
     $strip = str_replace("-", "", $strip);
 
     if($val == 0){
-        echo '<img src="'.$account_name.'/'.$x.'_UTC.jpg" class="gallery-item"/>';
+        echo '<img src="'.$directory.'/'.$x.'_UTC.jpg" class="gallery-item"/>';
     }else{
         echo '<section class="gallery-item splide splide-'.$strip.'" >
                 <div class="splide__track">
@@ -105,7 +105,7 @@ foreach($array as $x => $val) {
         for($i = 1; $i < $val +1 ; $i++){
             echo '
                 <li class="splide__slide">
-                    <img src="'.$account_name.'/'.$x.'_UTC_'.$i.'.jpg" class="gallery-item" alt="">
+                    <img src="'.$directory.'/'.$x.'_UTC_'.$i.'.jpg" class="gallery-item" alt="">
 			    </li>';
         }
 
@@ -124,6 +124,7 @@ foreach($array as $x => $val) {
 
 echo '</div>';
 ?>
+
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
