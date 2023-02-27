@@ -4,7 +4,6 @@ var accountName = "everton";
 var fileDirectory = "images/instagram";
 
 function galleryFromArray(arr){
-    console.log(arr);
     var section = 1;
     var rows = 6;
     var maxPerPage = 60;
@@ -52,7 +51,7 @@ function galleryFromArray(arr){
         count++;
         position++;
         let galleryItem = arr[i];
-        var gallery = new GalleryItem(galleryItem['date'], galleryItem['collection-size'], galleryItem['has-video'], galleryItem['position']);
+        var gallery = new GalleryItem(galleryItem['date'], galleryItem['collection-size'], galleryItem['has-video'], galleryItem['position'], galleryItem['caption']);
         document.getElementById("col-"+section+"-"+position).innerHTML += gallery.getHTML();
         if(position == rows){
             position = 0;
@@ -68,12 +67,13 @@ function galleryFromArray(arr){
 }
 
 class GalleryItem{
-    constructor(dateString, collectionLength, hasVideo, position){
+    constructor(dateString, collectionLength, hasVideo, position, caption){
         this.dateString = dateString;
         this.accountName = accountName;
         this.collectionLength = collectionLength; 
         this.hasVideo = hasVideo;
         this.position = position;
+        this.caption = caption;
     }
 
     getName(){
@@ -102,6 +102,10 @@ class GalleryItem{
         return this.collectionLength;
     }
 
+    getCaption(){
+        return this.caption;
+    }
+
     hasMp4(){
         return this.hasVideo;
     }
@@ -111,9 +115,9 @@ class GalleryItem{
 
         if(this.getCollectionSize() == 0){
             if(this.hasMp4() == true){
-                html +='<a class="video" onclick="expandVideo(this.firstElementChild)"><img src="'+fileDirectory+'/'+this.getDate()+'_UTC.jpg" class="gallery-item clickable-img" /></a>'
+                html +='<a class="video" onclick="expandVideo(this.firstElementChild)"><img src="'+fileDirectory+'/'+this.getDate()+'_UTC.jpg" caption="'+this.getCaption()+'" class="gallery-item clickable-img" /></a>'
             }else{
-                html +='<img src="'+fileDirectory+'/'+this.getDate()+'_UTC.jpg" class="gallery-item clickable-img" loading="lazy" />'
+                html +='<img src="'+fileDirectory+'/'+this.getDate()+'_UTC.jpg" class="gallery-item clickable-img" caption="'+this.getCaption()+'" loading="lazy" />'
             }
         }else{
             var splideHTML = '<section class="gallery-collection splide splide-'+this.getID()+'">'
@@ -122,7 +126,7 @@ class GalleryItem{
 
                 for(var i = 1; i < this.getCollectionSize() + 1; i++){
                     splideHTML += '<li class="splide__slide">'
-                                +'<img src="'+fileDirectory+'/'+this.getDate()+'_UTC_'+(i)+'.jpg" class="collection-item clickable-img" loading="lazy" alt="">'
+                                +'<img src="'+fileDirectory+'/'+this.getDate()+'_UTC_'+(i)+'.jpg" caption="'+this.getCaption()+'" class="collection-item clickable-img" loading="lazy" alt="">'
                             +'</li>';
                 }
 
@@ -149,6 +153,11 @@ window.addEventListener('load',
 
                 var img = document.getElementById("popoutImage");
                 img.setAttribute('src', images[i].getAttribute('src'));
+
+                var caption = document.getElementById("caption");
+                console.log(images[i].getAttribute("caption"));
+                caption.innerHTML = images[i].getAttribute("caption");
+
                 togglePopout();
             }
         var popoutExit = document.getElementById("exit");
@@ -186,6 +195,10 @@ function expandVideo(child){
     var video = document.getElementById("popoutVideo");
     video.setAttribute('display', "none");
     video.setAttribute('src', child.getAttribute('src').replace(".jpg", ".mp4"));
+    
+    var caption = document.getElementById("caption");
+    console.log(child.getAttribute("caption"));
+    caption.innerHTML = child.getAttribute("caption");
     togglePopout(true);
 }
 
@@ -212,5 +225,9 @@ function togglePopout(isVideo){
         
         var video = document.getElementById("popoutVideo");
         video.setAttribute('style', 'display: none;');
+
+        $('#caption').width($('#popoutImage').width());
+        // var caption = document.getElementById("caption");
+        // caption.innerHTML = 
     }
 }

@@ -20,6 +20,7 @@
         <div class="main">
             <img id="popoutImage" src="everton/2020-05-14_07-51-21_UTC.jpg" alt="">
             <video height="50%" id="popoutVideo" src="" style="display: none;" controls autoplay loop muted></video>
+            <p id="caption">NONE</p>
         </div>
     </section>
 
