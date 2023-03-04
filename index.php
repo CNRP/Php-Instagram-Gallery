@@ -5,130 +5,28 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/gallery.css">
     <link href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css" rel="stylesheet"></link>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css" integrity="sha384-b6lVK+yci+bfDmaY1u0zE8YYJt0TZxLEAFyYSLHId4xoVvsrQu3INevFKo+Xir8e" crossorigin="anonymous">
     <title>Document</title>
 </head>
 <body>
-<script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
 
-<style>
-    html{
-        background-color: #020512;
-    }
-    .gallery{
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: center;
-        align-items: center;
-    }
-    .column{
-        display: flex;
-        flex-direction: column;
-        flex-wrap: wrap;
-    }
+    <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+    <script src="js/gallery.js"></script>
 
-    .gallery-item{
-        width: 200px;
-        height: auto;
-    }
+    <section class="popout" id="popout" aria-expanded="false">
+        <a id="exit"><i class="bi bi-x"></i></a>
+        <div class="main">
+            <img id="popoutImage" src="everton/2020-05-14_07-51-21_UTC.jpg" alt="">
+            <video height="50%" id="popoutVideo" src="" style="display: none;" controls autoplay loop muted></video>
+            <p id="caption">NONE</p>
+        </div>
+    </section>
 
-    .group{
-        background-color: red;
-    }
-</style>
-
-<?php
-
-$array = []; 
-$account_name = "everton";
-$directory = "images/instagram";
-
-$handle = opendir(dirname(realpath(__FILE__)).'/'.$directory.'/');
-while($file = readdir($handle)){
-    $supported_image = array(
-        'gif',
-        'jpg',
-        'jpeg',
-        'png'
-    );
-
-    $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION)); // Using strtolower to overcome case sensitive
-    if (in_array($ext, $supported_image)) {
-        if($file !== '.' && $file !== '..'){
-        
-            $important = explode("UTC",$file)[1];
-            $trim = str_replace(".jpg", "", $important);
-            $trim = str_replace("_", "", $trim);
-
-            $key = substr($file, 0, strpos($file, "_UTC"));
-
-            if (array_key_exists($key, $array)){
-                if($trim > $array[$key]){
-                    $array[$key] = $trim;
-                }
-            }else{
-                if(is_numeric($trim)){
-                    $array[$key] = $trim;
-                }else{
-                    $array[$key] = 0;
-                }
-            }
-        }
-    }
-    
-}
-
-$length = sizeof($array)/4;
-print(sizeof($array));
-print($length);
-$count = 0;
-
-echo '<div class="gallery">
-        <div class="column">';
-
-
-$array = array_reverse($array);
-
-foreach($array as $x => $val) {
-    $count++;
-    $strip = str_replace("_", "", $x);
-    $strip = str_replace("-", "", $strip);
-
-    if($val == 0){
-        echo '<img src="'.$directory.'/'.$x.'_UTC.jpg" class="gallery-item"/>';
-    }else{
-        echo '<section class="gallery-item splide splide-'.$strip.'" >
-                <div class="splide__track">
-                    <ul class="splide__list">';
-
-        for($i = 1; $i < $val +1 ; $i++){
-            echo '
-                <li class="splide__slide">
-                    <img src="'.$directory.'/'.$x.'_UTC_'.$i.'.jpg" class="gallery-item" alt="">
-			    </li>';
-        }
-
-        echo '      </ul>
-                </div>
-            </section>
-            
-            <script> new Splide( ".splide-'.$strip.'" ).mount(); </script>';
-    }
-    
-    if($count >= $length){
-        $count = 0;
-        echo '</div><div class="column">';
-    }
-}
-
-echo '</div>';
-?>
-
-</div>
-
-<script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
-
+    <section id="gallery-main" class="gallery">
+    <?php require 'php/gallery-loading.php'; ?>
+    </section>
 
 </body>
 </html>

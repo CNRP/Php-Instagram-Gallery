@@ -225,6 +225,9 @@ function togglePopout(isVideo){
         
         var video = document.getElementById("popoutVideo");
         video.setAttribute('style', 'display: none;');
+        if (video.muted === false) {    
+            video.muted = true;
+        }
 
         $('#caption').width($('#popoutImage').width());
         // var caption = document.getElementById("caption");
