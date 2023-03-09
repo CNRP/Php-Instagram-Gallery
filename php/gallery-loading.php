@@ -1,5 +1,6 @@
 <?php
 
+//util function for debug
 function console_log($output, $with_script_tags = true)
 {
     $js_code = 'console.log(' . json_encode($output, JSON_HEX_TAG) . ');';
@@ -18,73 +19,48 @@ $count = 0;
 $hasvideo = 0;
 $hasCaption = 0;
 
-$handle = opendir(dirname(realpath(__DIR__)).'/'.$file_directory.'/');
-while($file = readdir($handle)){
+// All files in the image-directory folder
+$files = glob(dirname(realpath(__DIR__)).'/'.$file_directory.'/*');
+foreach($files as $filepath) {
+    $filename = basename($filepath);
 
-    $date = substr($file, 0, strpos($file, "_UTC"));
-    $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION)); // Using strtolower to overcome case sensitive
+    //trim the date from the file name for the file key
+    $date = strstr($filename, '_UTC', true);
+    
+    // Look for array entry with the date as the key, if not initalize with default values
+    $array[$date] ??= [
+        'date' => $date,
+        'caption' => '',
+        'collection-size' => 0,
+        'has-video' => false,
+    ];
+    
+    // File extension of said file
+    $ext = strtolower(pathinfo($filepath, PATHINFO_EXTENSION));
+    
     if($ext === 'jpg'){
-        $count++;
-
-        $collectionSize = (int)str_replace("_", "", str_replace(".jpg", "", explode("UTC",$file)[1]));
-        $arrayKey = array_search($date, array_column($array, 'date'));
-        if($arrayKey){
-            if(isset($array[$arrayKey]['collection-size'])){
-                $amount = intval($array[$arrayKey]['collection-size']);
-                console_log($collectionSize . " i: " . $file);
-                if($collectionSize > $amount){
-                    $array[$arrayKey]['collection-size'] = (int)$collectionSize;
-                }
-            }else{
-                $array[$arrayKey]['collection-size'] = (int)$collectionSize;
-            }
-        }else{
-            array_push($array, array ("date" => $date, "collection-size" => (int)$collectionSize));
-        }
-        
+        // Each JPG increments collection size
+        $array[$date]['collection-size']++;
     }
     
-    if($ext === 'mp4'){
-        $hasvideo++;
-        $arrayKey = array_search($date, array_column($array, 'date'));
-        if($arrayKey){
-            $array[$arrayKey]['has-video'] = true;
-        }else{
-            array_push($array, array ("date" => $date, "has-video" => true));
-        }
-    }
-    
-    if ($ext === "txt"){
-        $hasCaption++;
-        $file_location = dirname(realpath(__DIR__)).'/'.$file_directory.'/'. $file;
-        $myfile = fopen( $file_location, "r") or die("Unable to open file!");
-        $caption = fread( $myfile, filesize($file_location));
+    elseif ($ext === "txt"){
+        // if .txt is present add caption to entry by date
+        $caption = file_get_contents($filepath);
+        $array[$date]['caption'] = $caption;
 
-        $arrayKey = array_search($date, array_column($array, 'date'));
-        if($arrayKey){
-            $array[$arrayKey]['caption'] = $caption;
-        }else{
-            array_push($array, array ("date" => $date, "caption" => $caption));
-        }
-
-        fclose($myfile);
-        
+    } elseif($ext === 'mp4'){
+        // if .mp4 is present, has-video set to true
+        $array[$date]['has-video'] = true;
     }
-    // console_log($file);
 }
 
 
-usort($array, function($a, $b) {
-    return ($a['date'] < $b['date']) ? -1 : 1;
-  });
-$array = array_reverse($array);
+foreach ($array as $key => $value)
+    if ($value['date'] == false)
+        unset($array[$key]);
 
-// $result = true;
-// $videosInArray = array_count_values(array_map('intval', array_column($array, 'has-video')))[(int)$result];
-// console_log($hasvideo ." Videos in directory > ". $videosInArray ." Videos In Array");
-// console_log($hasCaption);
+// console_log($array);
 
-console_log($array);
-
+// send array to javascript for displaying
 echo'<script> galleryFromArray('.json_encode($array).') </script>';
 ?>

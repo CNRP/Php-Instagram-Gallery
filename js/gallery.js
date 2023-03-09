@@ -4,18 +4,21 @@ var accountName = "everton";
 var fileDirectory = "images/instagram";
 
 function galleryFromArray(arr){
+    console.log(arr);
+    console.log(Object.keys(arr).length);
+
     var section = 1;
     var rows = 6;
     var maxPerPage = 60;
 
-    var totalSections = Math.ceil(arr.length/maxPerPage);
-    var perPage = Math.ceil(arr.length/totalSections);
+    var totalSections = Math.ceil(Object.keys(arr).length/maxPerPage);
+    var perPage = Math.ceil(Object.keys(arr).length/totalSections);
 
-    console.log("Total Sections: "+totalSections+" Amount:" +arr.length+ " Per Page: "+maxPerPage, " Actual per page: "+perPage);
+    console.log("Total Sections: "+totalSections+" Amount:" + Object.keys(arr).length + " Per Page: "+maxPerPage, " Actual per page: "+perPage);
 
 
     var galleryMain = document.getElementById("gallery-main");
-    var html = '<section class="splide splide-pagination" aria-label="Splide Basic HTML Example">'
+    var html = '<section class="splide splide-pagination" aria-label="Feature Gallery">'
                     +'<div class="splide__track">'
                         +'<ul id="gallery-pages" class="splide__list">';
 
@@ -32,7 +35,8 @@ function galleryFromArray(arr){
     galleryMain.innerHTML += html; html = "";
     // console.log(arr);
     var position = 0;
-    for(let i = 0; i < arr.length; i++) {       
+    var keys = Object.keys(arr);
+    for (var i = 0, len = keys.length; i < len; i++) {    
         // console.log("Count: "+count+ " Section: "+section);
         if(count == perPage){
             count = 0;
@@ -50,7 +54,7 @@ function galleryFromArray(arr){
 
         count++;
         position++;
-        let galleryItem = arr[i];
+        let galleryItem = arr[keys[i]];
         var gallery = new GalleryItem(galleryItem['date'], galleryItem['collection-size'], galleryItem['has-video'], galleryItem['position'], galleryItem['caption']);
         document.getElementById("col-"+section+"-"+position).innerHTML += gallery.getHTML();
         if(position == rows){
@@ -113,7 +117,7 @@ class GalleryItem{
     getHTML(){
         var html = "";
 
-        if(this.getCollectionSize() == 0){
+        if(this.getCollectionSize() == 1){
             if(this.hasMp4() == true){
                 html +='<a class="video" onclick="expandVideo(this.firstElementChild)"><img src="'+fileDirectory+'/'+this.getDate()+'_UTC.jpg" caption="'+this.getCaption()+'" class="gallery-item clickable-img" /></a>'
             }else{
@@ -225,6 +229,7 @@ function togglePopout(isVideo){
         
         var video = document.getElementById("popoutVideo");
         video.setAttribute('style', 'display: none;');
+        
         if (video.muted === false) {    
             video.muted = true;
         }
